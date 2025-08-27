@@ -1,3 +1,5 @@
+// lib/services/firestore_service.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:resto2/models/role_permission_model.dart';
 import 'package:resto2/models/user_settings_model.dart';
@@ -85,6 +87,16 @@ class FirestoreService {
   }) async {
     await _db.collection(DBConstants.usersCollection).doc(uid).update({
       'sessionToken': token,
+    });
+  }
+
+  // Add this method to save the FCM token
+  Future<void> updateUserFcmToken({
+    required String uid,
+    required String? token,
+  }) async {
+    await _db.collection(DBConstants.usersCollection).doc(uid).update({
+      'fcmToken': token,
     });
   }
 }

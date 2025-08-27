@@ -92,6 +92,7 @@ class NotificationPage extends ConsumerWidget {
               itemCount: notifications.length,
               itemBuilder: (context, index) {
                 final notification = notifications[index];
+                // --- THIS IS THE FIX ---
                 final String subtitle = switch (notification.payload) {
                   GenericPayload p => p.message,
                   JoinRequestPayload _ => UIStrings.joinRequestMessage,
@@ -99,10 +100,11 @@ class NotificationPage extends ConsumerWidget {
                     p.wasApproved
                         ? UIStrings.requestApproved
                         : UIStrings.requestRejected,
-                  StockEditPayload p => // Updated this line
-                  '${p.itemName}: ${p.quantityBefore.toStringAsFixed(2)} ➔ ${p.quantityAfter.toStringAsFixed(2)}',
+                  StockEditPayload p =>
+                    '${p.itemName}: ${p.quantityBefore.toStringAsFixed(2)} ➔ ${p.quantityAfter.toStringAsFixed(2)}',
                   _ => UIStrings.newNotification,
                 };
+                // --- END OF FIX ---
 
                 return ListTile(
                   leading: CircleAvatar(
@@ -150,7 +152,7 @@ class NotificationPage extends ConsumerWidget {
                       case JoinRequestPayload():
                         context.push(AppRoutes.manageStaff);
                         break;
-                      case StockEditPayload p: // Updated this case
+                      case StockEditPayload p:
                         final change = p.quantityChanged;
                         final changeText =
                             '${change > 0 ? '+' : ''}${change.toStringAsFixed(2)}';

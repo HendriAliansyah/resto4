@@ -1,3 +1,4 @@
+// app/build.gradle.kts
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -14,6 +15,10 @@ android {
     ndkVersion = "27.0.12077973"
 
     compileOptions {
+        // --- THIS IS THE FIRST FIX ---
+        // Enable core library desugaring
+        isCoreLibraryDesugaringEnabled = true
+        // --- END OF FIX ---
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -23,11 +28,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.resto2"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = flutter.minSdkVersion // flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -35,8 +37,6 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -44,4 +44,11 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // --- THIS IS THE SECOND FIX ---
+    // Add the dependency for core library desugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    // --- END OF FIX ---
 }

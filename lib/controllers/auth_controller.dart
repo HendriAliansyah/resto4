@@ -94,11 +94,22 @@ class AuthController extends StateNotifier<bool> {
     }
   }
 
+  // --- THIS IS THE FIX ---
   Future<void> signOut() async {
-    // THE FIX IS HERE: We no longer clear the token manually.
-    // The onDisconnect handler and Cloud Function will take care of it.
+    // Get the current user's ID before they are signed out.
+    final user = _authService.getCurrentUser();
+    if (user != null) {
+      // Clear the FCM and session tokens from their Firestore document.
+      await _firestoreService.updateUserFcmToken(uid: user.uid, token: null);
+      await _firestoreService.updateUserSessionToken(
+        uid: user.uid,
+        token: null,
+      );
+    }
+    // Now, sign the user out from Firebase Auth.
     await _authService.signOut();
   }
+  // --- END OF FIX ---
 
   Future<void> createRestaurantAndAssignOwner({
     required String restaurantName,

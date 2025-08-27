@@ -53,6 +53,8 @@ const Map<UserRole, List<PagePermission>> rolePermissions = {
     PagePermission.accessInventoryMaster,
     PagePermission.accessPurchasePage,
     PagePermission.accessPurchaseHistory,
+    PagePermission.accessStockEdit,
+    PagePermission.accessStockMovementHistory,
   ],
   UserRole.cashier: [
     // Cashier has no page-level permissions
