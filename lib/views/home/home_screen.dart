@@ -1,3 +1,4 @@
+// lib/views/home/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:resto2/views/widgets/app_drawer.dart'; // Import the new drawer

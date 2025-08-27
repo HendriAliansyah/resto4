@@ -1,3 +1,4 @@
+// lib/views/inventory/widgets/inventory_bottom_sheet.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -99,7 +100,6 @@ class InventoryBottomSheet extends HookConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // THE FIX IS HERE: Matched the structure from the MenuBottomSheet
                       InkWell(
                         onTap: pickImage,
                         child: AspectRatio(

@@ -1,3 +1,4 @@
+// lib/views/auth/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +14,7 @@ class LoginScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final emailController = useTextEditingController();
+    final emailController = TextEditingController();
     final passwordController = useTextEditingController();
     final isLoading = ref.watch(authControllerProvider);
     final isPasswordVisible = useState(false);

@@ -1,9 +1,8 @@
 // lib/views/staff/staff_management_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; // THE FIX IS HERE
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:resto2/models/join_request_model.dart';
 import 'package:resto2/models/role_permission_model.dart';
@@ -50,7 +49,6 @@ class StaffManagementPage extends HookConsumerWidget {
 }
 
 class CurrentStaffView extends HookConsumerWidget {
-  // THE FIX IS HERE
   const CurrentStaffView({super.key});
 
   @override
@@ -58,7 +56,7 @@ class CurrentStaffView extends HookConsumerWidget {
     final staffListAsync = ref.watch(staffListStreamProvider);
     final filterState = ref.watch(staffFilterProvider);
     final sortedStaffList = ref.watch(sortedStaffProvider);
-    final searchFocusNode = useFocusNode(); // THE FIX IS HERE
+    final searchFocusNode = useFocusNode();
 
     return staffListAsync.when(
       data: (_) {
@@ -67,7 +65,7 @@ class CurrentStaffView extends HookConsumerWidget {
             FilterExpansionTile(
               children: [
                 TextFormField(
-                  focusNode: searchFocusNode, // THE FIX IS HERE
+                  focusNode: searchFocusNode,
                   decoration: const InputDecoration(
                     labelText: 'Search by Name or Email',
                     prefixIcon: Icon(Icons.search),
@@ -92,7 +90,6 @@ class CurrentStaffView extends HookConsumerWidget {
                     padding: EdgeInsets.only(right: 10),
                   ),
                   onMenuStateChange: (isOpen) {
-                    // THE FIX IS HERE
                     if (isOpen) {
                       searchFocusNode.unfocus();
                     }
@@ -128,7 +125,6 @@ class CurrentStaffView extends HookConsumerWidget {
                           padding: EdgeInsets.only(right: 10),
                         ),
                         onMenuStateChange: (isOpen) {
-                          // THE FIX IS HERE
                           if (isOpen) {
                             searchFocusNode.unfocus();
                           }
@@ -226,7 +222,7 @@ class JoinRequestsView extends ConsumerWidget {
           return AlertDialog(
             title: const Text(UIStrings.assignRole),
             content: DropdownButtonFormField<UserRole>(
-              value: role,
+              initialValue: role,
               items:
                   UserRole.values
                       .where((r) => r != UserRole.owner) // Cannot assign owner

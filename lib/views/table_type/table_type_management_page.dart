@@ -1,3 +1,4 @@
+// lib/views/table_type/table_type_management_page.dart
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:resto2/models/table_type_model.dart';
@@ -13,8 +14,6 @@ class TableTypeManagementPage extends ConsumerWidget {
     final tableTypesAsync = ref.watch(tableTypesStreamProvider);
     final controller = ref.read(tableTypeControllerProvider.notifier);
 
-    // THE FIX: The listener has been removed from this page.
-
     void showTableTypeDialog({TableType? tableType}) {
       showDialog(
         context: context,
@@ -27,13 +26,27 @@ class TableTypeManagementPage extends ConsumerWidget {
       drawer: const AppDrawer(),
       body: SafeArea(
         child: tableTypesAsync.when(
-          data:
-              (types) => ListView.builder(
-                itemCount: types.length,
-                itemBuilder: (_, index) {
-                  final type = types[index];
-                  return ListTile(
-                    title: Text(type.name),
+          data: (types) {
+            if (types.isEmpty) {
+              return const Center(
+                child: Text('No table types found. Add one to get started!'),
+              );
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: types.length,
+              itemBuilder: (_, index) {
+                final type = types[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 4.0,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      type.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -43,22 +56,24 @@ class TableTypeManagementPage extends ConsumerWidget {
                         ),
                         IconButton(
                           onPressed: () => controller.deleteTableType(type.id),
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.delete_outline,
-                            color: Colors.redAccent,
+                            color: Theme.of(context).colorScheme.error,
                           ),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
+            );
+          },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, st) => Center(child: Text(e.toString())),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: showTableTypeDialog,
+        onPressed: () => showTableTypeDialog(),
         child: const Icon(Icons.add),
       ),
     );

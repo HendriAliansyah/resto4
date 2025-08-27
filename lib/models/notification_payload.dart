@@ -21,3 +21,22 @@ class JoinRequestResponsePayload extends NotificationPayload {
   final bool wasApproved;
   const JoinRequestResponsePayload({required this.wasApproved});
 }
+
+/// A payload for a notification about a manual stock edit.
+class StockEditPayload extends NotificationPayload {
+  final String userDisplayName;
+  final String itemName;
+  final double quantityBefore;
+  final double quantityAfter;
+  final String reason;
+
+  const StockEditPayload({
+    required this.userDisplayName,
+    required this.itemName,
+    required this.quantityBefore,
+    required this.quantityAfter,
+    required this.reason,
+  });
+
+  double get quantityChanged => quantityAfter - quantityBefore;
+}

@@ -99,6 +99,21 @@ class AppDrawer extends ConsumerWidget {
                 ) ??
                 false
             : false;
+    final bool canAccessStockEdit =
+        userRole != null
+            ? rolePermissions[userRole]?.contains(
+                  PagePermission.accessStockEdit,
+                ) ??
+                false
+            : false;
+
+    final bool canAccessStockMovementHistory =
+        userRole != null
+            ? rolePermissions[userRole]?.contains(
+                  PagePermission.accessStockMovementHistory,
+                ) ??
+                false
+            : false;
 
     return Drawer(
       child: ListView(
@@ -219,6 +234,24 @@ class AppDrawer extends ConsumerWidget {
               onTap: () {
                 Navigator.pop(context);
                 context.push(AppRoutes.purchaseHistory);
+              },
+            ),
+          if (canAccessStockEdit)
+            ListTile(
+              leading: const Icon(Icons.edit_note),
+              title: const Text('Edit Stock'),
+              onTap: () {
+                Navigator.pop(context);
+                context.push(AppRoutes.editStock);
+              },
+            ),
+          if (canAccessStockMovementHistory)
+            ListTile(
+              leading: const Icon(Icons.sync_alt),
+              title: const Text('Stock Movement History'),
+              onTap: () {
+                Navigator.pop(context);
+                context.push(AppRoutes.stockMovementHistory);
               },
             ),
           const Divider(),

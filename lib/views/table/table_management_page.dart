@@ -1,5 +1,4 @@
 // lib/views/table/table_management_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -127,6 +126,7 @@ class TableManagementPage extends ConsumerWidget {
             ),
             Expanded(
               child: ListView.builder(
+                padding: const EdgeInsets.all(8.0),
                 itemCount: tables.length,
                 itemBuilder: (context, index) {
                   final table = tables[index];
@@ -135,27 +135,39 @@ class TableManagementPage extends ConsumerWidget {
                     orElse:
                         () => TableType(id: '', name: 'N/A', restaurantId: ''),
                   );
-                  return ListTile(
-                    title: Text(table.name),
-                    subtitle: Text(
-                      '${tableType?.name} • Capacity: ${table.capacity}',
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => showTableDialog(table: table),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            ref
-                                .read(tableControllerProvider.notifier)
-                                .deleteTable(table.id);
-                          },
-                        ),
-                      ],
+                    child: ListTile(
+                      title: Text(
+                        table.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '${tableType?.name} • Capacity: ${table.capacity}',
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit_outlined),
+                            onPressed: () => showTableDialog(table: table),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete_outline,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            onPressed: () {
+                              ref
+                                  .read(tableControllerProvider.notifier)
+                                  .deleteTable(table.id);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

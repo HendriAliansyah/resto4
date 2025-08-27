@@ -21,6 +21,8 @@ class AppRoutes {
   static const String manageInventory = '/manage-inventory';
   static const String receivingInventory = '/receiving-inventory';
   static const String purchaseHistory = '/purchase-history';
+  static const String editStock = '/edit-stock';
+  static const String stockMovementHistory = '/stock-movement-history';
 }
 
 // UI String Constants

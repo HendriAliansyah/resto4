@@ -1,3 +1,4 @@
+// lib/models/notification_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:resto2/models/notification_payload.dart';
 
@@ -30,6 +31,15 @@ class NotificationModel {
           wasApproved: data['wasApproved'] ?? false,
         );
         break;
+      case 'stockEdit': // Added this case
+        payload = StockEditPayload(
+          userDisplayName: data['userDisplayName'] ?? 'Unknown User',
+          itemName: data['itemName'] ?? 'Unknown Item',
+          quantityBefore: (data['quantityBefore'] ?? 0.0).toDouble(),
+          quantityAfter: (data['quantityAfter'] ?? 0.0).toDouble(),
+          reason: data['reason'] ?? 'No reason provided',
+        );
+        break;
       default:
         payload = GenericPayload(message: data['body'] ?? 'No content');
     }
@@ -58,6 +68,14 @@ class NotificationModel {
       case JoinRequestResponsePayload p:
         type = 'joinRequestResponse';
         payloadData['wasApproved'] = p.wasApproved;
+        break;
+      case StockEditPayload p: // Added this case
+        type = 'stockEdit';
+        payloadData['userDisplayName'] = p.userDisplayName;
+        payloadData['itemName'] = p.itemName;
+        payloadData['quantityBefore'] = p.quantityBefore;
+        payloadData['quantityAfter'] = p.quantityAfter;
+        payloadData['reason'] = p.reason;
         break;
       default:
         type = 'generic';

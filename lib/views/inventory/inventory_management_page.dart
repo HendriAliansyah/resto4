@@ -28,7 +28,7 @@ class InventoryManagementPage extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Inventory & Stock')), // Updated Title
+      appBar: AppBar(title: const Text('Inventory & Stock')),
       drawer: const AppDrawer(),
       body: SafeArea(
         child: GestureDetector(

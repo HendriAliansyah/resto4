@@ -1,12 +1,17 @@
+// lib/providers/inventory_provider.dart
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:resto2/models/inventory_item_model.dart';
+import 'package:resto2/models/notification_payload.dart';
+import 'package:resto2/models/stock_movement_model.dart';
 import 'package:resto2/providers/auth_providers.dart';
 import 'package:resto2/providers/inventory_filter_provider.dart';
+import 'package:resto2/providers/notification_provider.dart';
 import 'package:resto2/providers/staff_filter_provider.dart';
 import 'package:resto2/providers/storage_provider.dart';
 import 'package:resto2/services/inventory_service.dart';
+import 'package:resto2/services/stock_movement_service.dart';
 
 // State Enum
 enum InventoryActionStatus { initial, loading, success, error }
@@ -204,5 +209,70 @@ class InventoryController extends StateNotifier<InventoryState> {
         'totalCost': newTotalCost,
       });
     });
+  }
+
+  Future<void> editStock({
+    required InventoryItem item,
+    required double newQuantity,
+    required String reason,
+  }) async {
+    state = InventoryState(status: InventoryActionStatus.loading);
+    final user = _ref.read(currentUserProvider).asData?.value;
+    if (user == null || user.restaurantId == null) {
+      state = InventoryState(
+        status: InventoryActionStatus.error,
+        errorMessage: 'User not found or not in a restaurant.',
+      );
+      return;
+    }
+
+    try {
+      final movement = StockMovementModel(
+        id: '',
+        inventoryItemId: item.id,
+        userId: user.uid,
+        userDisplayName: user.displayName ?? 'Unknown User',
+        type: StockMovementType.manualEdit,
+        quantityBefore: item.quantityInStock,
+        quantityAfter: newQuantity,
+        reason: reason,
+        createdAt: Timestamp.now(),
+        restaurantId: user.restaurantId!,
+      );
+
+      // Use a transaction to ensure atomicity
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final itemRef = _ref
+            .read(inventoryServiceProvider)
+            .getInventoryItemRef(item.id);
+        final movementRef =
+            _ref.read(firestoreProvider).collection('stockMovements').doc();
+
+        transaction.update(itemRef, {'quantityInStock': newQuantity});
+        transaction.set(movementRef, movement.toJson());
+      });
+
+      // Send notification to owners and managers
+      await _ref
+          .read(notificationServiceProvider)
+          .sendNotificationToRestaurantManagers(
+            restaurantId: user.restaurantId!,
+            title: 'Stock Alert: Manual Edit',
+            payload: StockEditPayload(
+              userDisplayName: user.displayName ?? 'Unknown User',
+              itemName: item.name,
+              quantityBefore: item.quantityInStock,
+              quantityAfter: newQuantity,
+              reason: reason,
+            ),
+          );
+
+      state = InventoryState(status: InventoryActionStatus.success);
+    } catch (e) {
+      state = InventoryState(
+        status: InventoryActionStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
   }
 }

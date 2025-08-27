@@ -1,3 +1,4 @@
+// lib/views/table_type/widgets/table_type_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,7 +19,6 @@ class TableTypeDialog extends HookConsumerWidget {
         ref.watch(tableTypeControllerProvider).status ==
         TableTypeActionStatus.loading;
 
-    // THE FIX IS HERE: The listener is now inside the dialog.
     ref.listen<TableTypeState>(tableTypeControllerProvider, (prev, next) {
       if (next.status == TableTypeActionStatus.success) {
         Navigator.of(context).pop(); // Pop the dialog itself
@@ -71,7 +71,11 @@ class TableTypeDialog extends HookConsumerWidget {
             onPressed: isLoading ? null : submit,
             child:
                 isLoading
-                    ? const CircularProgressIndicator()
+                    ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                     : const Text('Save'),
           ),
         ],

@@ -1,3 +1,4 @@
+// lib/views/course/course_management_page.dart
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:resto2/models/course_model.dart';

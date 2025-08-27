@@ -1,3 +1,4 @@
+// lib/views/notifications/notification_page.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -34,7 +35,9 @@ class NotificationPage extends ConsumerWidget {
                 Expanded(child: Text(title)),
               ],
             ),
-            content: SingleChildScrollView(child: Text(content)),
+            content: SingleChildScrollView(
+              child: Text(content, style: const TextStyle(height: 1.5)),
+            ),
             actions: <Widget>[
               TextButton(
                 child: const Text(UIStrings.close),
@@ -54,8 +57,6 @@ class NotificationPage extends ConsumerWidget {
       body: SafeArea(
         child: notificationsAsync.when(
           data: (notifications) {
-            // **THE ENHANCEMENT IS HERE:**
-            // A more informative and visually appealing empty state for notifications.
             if (notifications.isEmpty) {
               return const Center(
                 child: Padding(
@@ -98,6 +99,8 @@ class NotificationPage extends ConsumerWidget {
                     p.wasApproved
                         ? UIStrings.requestApproved
                         : UIStrings.requestRejected,
+                  StockEditPayload p => // Updated this line
+                  '${p.itemName}: ${p.quantityBefore.toStringAsFixed(2)} ➔ ${p.quantityAfter.toStringAsFixed(2)}',
                   _ => UIStrings.newNotification,
                 };
 
@@ -146,6 +149,19 @@ class NotificationPage extends ConsumerWidget {
                     switch (notification.payload) {
                       case JoinRequestPayload():
                         context.push(AppRoutes.manageStaff);
+                        break;
+                      case StockEditPayload p: // Updated this case
+                        final change = p.quantityChanged;
+                        final changeText =
+                            '${change > 0 ? '+' : ''}${change.toStringAsFixed(2)}';
+                        final content =
+                            'User: ${p.userDisplayName}\n'
+                            'Item: ${p.itemName}\n\n'
+                            'Quantity Before: ${p.quantityBefore.toStringAsFixed(2)}\n'
+                            'Quantity After: ${p.quantityAfter.toStringAsFixed(2)}\n'
+                            'Change: $changeText\n\n'
+                            'Reason: ${p.reason}';
+                        showNotificationDialog(notification.title, content);
                         break;
                       case GenericPayload p:
                         showNotificationDialog(notification.title, p.message);
